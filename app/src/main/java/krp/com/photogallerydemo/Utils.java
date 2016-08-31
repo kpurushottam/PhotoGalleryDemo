@@ -50,8 +50,7 @@ public class Utils {
 		}
 	}
 
-	public static ArrayList<AlbumsModel> getAllDirectoriesWithImages(
-			Cursor cursor) {
+	public static ArrayList<AlbumsModel> getAllDirectoriesWithImages(Cursor cursor) {
 		if (cursor == null) {
 			return null;
 		}
@@ -69,8 +68,6 @@ public class Utils {
 			folderPath = imgPath.substring(0, imgPath.lastIndexOf("/"));
 			if (folderPathList.add(folderPath)) {
 				AlbumsModel gm = new AlbumsModel ();
-                String folderName = gm.getFolderName ();
-                String folderImagePath = gm.getFolderName ();
 
                 gm.folderName = folderPath.substring(
 						folderPath.lastIndexOf("/") + 1, folderPath.length());

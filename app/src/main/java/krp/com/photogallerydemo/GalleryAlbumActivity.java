@@ -18,9 +18,6 @@ public class GalleryAlbumActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private GalleryAlbumAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
-//    private List<Student> studentList;
 
     private ArrayList<AlbumsModel> albumsModels;
 
@@ -29,9 +26,6 @@ public class GalleryAlbumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_albums);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        btnSelection = (Button) findViewById(R.id.btnShow);
-
-
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -48,63 +42,42 @@ public class GalleryAlbumActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager (this,2));
 
         // create an Object for Adapter
-        mAdapter = new GalleryAlbumAdapter (GalleryAlbumActivity.this,getGalleryAlbumImages ());
+        mAdapter = new GalleryAlbumAdapter (GalleryAlbumActivity.this, getGalleryAlbumImages());
 
         // set the adapter object to the Recyclerview
         mRecyclerView.setAdapter(mAdapter);
 
-
-//        btnSelection.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//
-//                String data = "";
-//                List<AlbumsModel> stList = ((GalleryAlbumAdapter) mAdapter)
-//                        .getGalleryImagesList ();
-//
-//                for (int i = 0; i < stList.size(); i++) {
-//                    AlbumsModel singleStudent = stList.get(i);
-//                    if (singleStudent.isSelected() == true) {
-//
-//                        data = data + "\n" + singleStudent.getFolderName ().toString();
-//                    }
-//
-//                }
-//
-//                Toast.makeText(GalleryAlbumActivity.this,
-//                        "Selected Students: \n" + data, Toast.LENGTH_LONG)
-//                        .show();
-//            }
-//        });
-
-        mAdapter.SetOnItemClickListener(new GalleryAlbumAdapter.OnItemClickListener () {
+        // set the recycler adapter item select listener
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(GalleryAlbumActivity.this, mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
 
             @Override
-            public void onItemClick (View v, int position) {
-                // do something with position
-
-
-                Intent galleryAlbumsIntent = new Intent (GalleryAlbumActivity.this,ShowAlbumImagesActivity.class);
+            public void onItemClick(View view, int position) {
+                Intent galleryAlbumsIntent = new Intent (GalleryAlbumActivity.this, ShowAlbumImagesActivity.class);
                 galleryAlbumsIntent.putExtra ("position",position);
 
                 galleryAlbumsIntent.putExtra ("albumsList", getGalleryAlbumImages());
-                startActivity (galleryAlbumsIntent);
+                startActivity(galleryAlbumsIntent);
             }
-        });
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
     }
 
     private ArrayList<AlbumsModel> getGalleryAlbumImages() {
-                final String[] columns = { MediaStore.Images.Media.DATA,
-                        MediaStore.Images.Media._ID };
-                final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-                Cursor imagecursor = managedQuery(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns,
-                        null, null, orderBy + " DESC");
-                albumsModels = Utils.getAllDirectoriesWithImages(imagecursor);
+        if(albumsModels == null) {
+            final String[] columns = {MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media._ID};
+            final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+            Cursor imagecursor = managedQuery(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns,
+                    null, null, orderBy + " DESC");
+            albumsModels = Utils.getAllDirectoriesWithImages(imagecursor);
+        }
         return albumsModels;
-
     }
 
 }
